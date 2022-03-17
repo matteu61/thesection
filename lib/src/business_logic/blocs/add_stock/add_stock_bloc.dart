@@ -151,8 +151,6 @@ class AddStockBloc extends Bloc<AddStockEvent, AddStockInitial> {
         url = await load.ref.getDownloadURL();
         downloadUrls.add(url);
         emit(state.copyWith(downloadUrls: downloadUrls.toList()));
-
-        print('Progress: ${(load.bytesTransferred / load.totalBytes) * 100} %');
       } catch (e) {
         print('error uploading pix: $e');
       }
