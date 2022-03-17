@@ -152,7 +152,7 @@ class AddStockBloc extends Bloc<AddStockEvent, AddStockInitial> {
         downloadUrls.add(url);
         emit(state.copyWith(downloadUrls: downloadUrls.toList()));
       } catch (e) {
-        print('error uploading pix: $e');
+        print('error nowgit push uploading pix: $e');
       }
     }
   }
