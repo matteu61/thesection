@@ -1,11 +1,12 @@
 import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:thesection/src/data/data_providers/stock_data_provider.dart';
 import 'package:thesection/src/data/models/on_sale.dart';
-import 'package:thesection/src/data/models/size_color_entry.dart';
-import 'package:thesection/src/data/models/sizeblock.dart';
+
 import 'package:thesection/src/data/models/stock_model.dart';
 import 'package:thesection/src/data/repositaries/image_picker_repo.dart';
 import 'package:thesection/src/data/repositaries/stock_repository.dart';
@@ -143,17 +144,17 @@ class AddStockBloc extends Bloc<AddStockEvent, AddStockInitial> {
   _uplImages(Emitter<AddStockInitial> emit) async {
     Storage storage = Storage();
     List<String> downloadUrls = [];
-    for (var item in state.images) {
-      try {
-        String url;
-
-        var load = await storage.uploadImage(item);
-        url = await load.ref.getDownloadURL();
-        downloadUrls.add(url);
-        emit(state.copyWith(downloadUrls: downloadUrls.toList()));
-      } catch (e) {
-        print('error nowgit push uploading pix: $e');
-      }
+    for (var i = 0; i <= state.images.length - 1; i++) {
+      emit(state.copyWith(imageState: ImageUploadState.uploadingImages));
+      await storage.uploadImage(state.images[i]).then((value) {
+        print(
+            'Progress: ${(value.bytesTransferred / value.totalBytes) * 100} %');
+      }).onError((error, stackTrace) {
+        print('$error,$stackTrace');
+        emit(state.copyWith(imageState: ImageUploadState.failedImages));
+      }).whenComplete(() {
+        print('succesfully loaded image ${i + 1}');
+      });
     }
   }
 
